@@ -9,12 +9,15 @@ import (
 	"github.com/urfave/cli/v2"
 )
 
+var version = ""
+
 func main() {
 	app := &cli.App{
 		Name:      "just-encrypt-yaml",
 		Usage:     "Encrypt or decrypt YAML files using RSA keys",
 		ArgsUsage: "<file>",
 		Suggest:   true,
+		Version:   version,
 		Flags: []cli.Flag{
 			&cli.StringFlag{
 				Name:     "key",
