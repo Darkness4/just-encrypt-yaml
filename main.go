@@ -1,12 +1,16 @@
+// just-encrypt-yaml is a simple command-line tool to encrypt or decrypt YAML files using RSA keys.
 package main
 
 import (
+	"crypto/rand"
 	"fmt"
 	"log"
 	"os"
 	"path/filepath"
 
+	"github.com/Darkness4/just-encrypt-yaml/cryptoyaml"
 	"github.com/urfave/cli/v2"
+	"gopkg.in/yaml.v3"
 )
 
 var version = ""
@@ -56,19 +60,23 @@ func main() {
 				return fmt.Errorf("failed to open YAML file: %w", err)
 			}
 			defer input.Close()
+			dec := yaml.NewDecoder(input)
 
 			output, err := os.Create(outputFile)
 			if err != nil {
 				return fmt.Errorf("failed to create output file: %w", err)
 			}
 			defer output.Close()
+			enc := yaml.NewEncoder(output)
+			enc.SetIndent(2)
 
 			if decrypt {
 				privKey, err := LoadPrivateKey(key)
 				if err != nil {
 					return fmt.Errorf("failed to load private key: %w", err)
 				}
-				if err := DecryptYAML(input, output, privKey); err != nil {
+
+				if err := cryptoyaml.Decrypt(rand.Reader, dec, enc, privKey); err != nil {
 					return fmt.Errorf("decryption failed: %w", err)
 				}
 				fmt.Println("Decryption successful. Output written to:", outputFile)
@@ -77,7 +85,7 @@ func main() {
 				if err != nil {
 					return fmt.Errorf("failed to load public certificate: %w", err)
 				}
-				if err := EncryptYAML(input, output, pubKey); err != nil {
+				if err := cryptoyaml.Encrypt(rand.Reader, dec, enc, pubKey); err != nil {
 					return fmt.Errorf("encryption failed: %w", err)
 				}
 				fmt.Println("Encryption successful. Output written to:", outputFile)

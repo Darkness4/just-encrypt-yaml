@@ -2,6 +2,8 @@
 
 Just encrypt string values in YAML with asymmetric PEM keys. Needed for GitOps when we need to encrypt locally, and decrypt server-side.
 
+Made with standard library. Simple and as basic as possible.
+
 ## Usage
 
 ### Generate PEM keys
@@ -51,7 +53,7 @@ wireguard:
 **Execute:**
 
 ```bash
-just-encrypt-yaml --decrypt --key tls.kej [--out secret-sealed-decrypted.yaml] secret-sealed.yaml
+just-encrypt-yaml --decrypt --key tls.key [--out secret-sealed-decrypted.yaml] secret-sealed.yaml
 ```
 
 **secret.yaml**
