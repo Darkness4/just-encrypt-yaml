@@ -22,8 +22,19 @@ wireguard:
     privateKey: "myPrivateKey"
 ```
 
+**Execute:**
+
 ```bash
 just-encrypt-yaml --key tls.crt  [--out secret-sealed.yaml] secret.yaml
+```
+
+**secret-sealed.yaml**
+
+```yaml
+mySecret: AgALQpFfOS5AF...
+wireguard:
+  wg0:
+     privateKey: AgBBuKY...
 ```
 
 ### Decrypt
@@ -33,12 +44,24 @@ just-encrypt-yaml --key tls.crt  [--out secret-sealed.yaml] secret.yaml
 ```yaml
 mySecret: AgALQpFfOS5AF...
 wireguard:
-    wg0:
-        privateKey: AgBBuKY...
+  wg0:
+     privateKey: AgBBuKY...
 ```
+
+**Execute:**
 
 ```bash
 just-encrypt-yaml --decrypt --key tls.kej [--out secret-sealed-decrypted.yaml] secret-sealed.yaml
+```
+
+**secret.yaml**
+
+```yaml
+mySecret: "mySecretValue"
+
+wireguard:
+  wg0:
+    privateKey: "myPrivateKey"
 ```
 
 ### Help
@@ -54,10 +77,66 @@ COMMANDS:
    help, h  Shows a list of commands or help for one command
 
 GLOBAL OPTIONS:
-   --key value  Path to the private RSA key (for decryption) or certificate (for encryption)
-   --decrypt    Decrypt the YAML file (default: false)
-   --out value  Path to the output file
-   --help, -h   show help
+   --key value    Path to the private RSA key (for decryption) or certificate (for encryption)
+   --decrypt      Decrypt the YAML file (default: false)
+   --out value    Path to the output file
+   --help, -h     show help
+   --version, -v  print the version
+```
+
+## Usage with gomplate
+
+***config.boot.enc***
+
+```groovy
+interfaces {
+    wireguard wg0 {
+        address "10.0.0.1/24"
+        address "fd00:1234:5678::1/64"
+        description "Peer VPN"
+        peer peer01 {
+            allowed-ips "10.0.0.2/32"
+            allowed-ips "fd00:1234:5678::2/128"
+            public-key "gVO0f7i3UsdWWkLYOVzawcndBuKC6FggVLWtdkXoFWQ="
+        }
+        port "51820"
+        private-key "{{ .wireguard.wg0.privateKey }}"
+    }
+}
+```
+
+**secret-sealed.yaml**
+
+```yaml
+wireguard:
+  wg0:
+    privateKey: AgBBuKY...
+```
+
+**Execute:**
+
+```bash
+just-encrypt-yaml --decrypt --key tls.key --out secret.yaml secret-sealed.yaml
+gomplate -c ".=secret.yaml" -f config.boot.enc -o config.boot
+```
+
+**config.boot**
+
+```groovy
+interfaces {
+    wireguard wg0 {
+        address "10.0.0.1/24"
+        address "fd00:1234:5678::1/64"
+        description "Peer VPN"
+        peer peer01 {
+            allowed-ips "10.0.0.2/32"
+            allowed-ips "fd00:1234:5678::2/128"
+            public-key "gVO0f7i3UsdWWkLYOVzawcndBuKC6FggVLWtdkXoFWQ="
+        }
+        port "51820"
+        private-key "gJVybSkgiEJLNOUpz8nTfKGUpLXSy6OMvLqLkLIPOUk="
+    }
+}
 ```
 
 ## License
