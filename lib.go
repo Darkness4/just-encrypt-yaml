@@ -35,11 +35,7 @@ func EncryptYAML(r io.Reader, w io.Writer, pub *rsa.PublicKey) error {
 	}
 
 	// Write the encrypted map to the writer
-	if err := yaml.NewEncoder(w).Encode(m); err != nil {
-		return err
-	}
-
-	return nil
+	return yaml.NewEncoder(w).Encode(m)
 }
 
 func DecryptYAML(r io.Reader, w io.Writer, priv *rsa.PrivateKey) error {
@@ -55,11 +51,9 @@ func DecryptYAML(r io.Reader, w io.Writer, priv *rsa.PrivateKey) error {
 	}
 
 	// Write the decrypted map to the writer
-	if err := yaml.NewEncoder(w).Encode(m); err != nil {
-		return err
-	}
-
-	return nil
+	enc := yaml.NewEncoder(w)
+	enc.SetIndent(2)
+	return enc.Encode(m)
 }
 
 func EncryptMap(m map[string]any, pub *rsa.PublicKey) error {
