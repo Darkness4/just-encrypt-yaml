@@ -4,6 +4,12 @@ Just encrypt string values in YAML with asymmetric PEM keys. Needed for GitOps w
 
 Made with standard library. Simple and as basic as possible.
 
+> [!NOTE]
+>
+> Since this project only uses standard libraries, maintenance won't be very frequent (there is nothing to update besides dependencies), but it should work for a long time.
+>
+> Don't fear about the lack of commits, it's just because there is nothing to update!
+
 ## Usage
 
 ### Generate PEM keys
