@@ -4,7 +4,7 @@ go 1.23.2
 
 require (
 	github.com/urfave/cli/v2 v2.27.6
-	github.com/urfave/cli/v3 v3.1.1
+	github.com/urfave/cli/v3 v3.2.0
 	gopkg.in/yaml.v3 v3.0.1
 )
 
