@@ -3,7 +3,7 @@ module github.com/Darkness4/just-encrypt-yaml
 go 1.23.2
 
 require (
-	github.com/urfave/cli/v2 v2.27.6
+	github.com/urfave/cli/v3 v3.3.2
 	github.com/urfave/cli/v3 v3.3.2
 	gopkg.in/yaml.v3 v3.0.1
 )
