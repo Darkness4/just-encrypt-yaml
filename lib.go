@@ -44,7 +44,7 @@ func LoadPrivateKey(keyPath string) (*rsa.PrivateKey, error) {
 	}
 
 	block, _ := pem.Decode(keyPEM)
-	if block == nil || !(block.Type == "RSA PRIVATE KEY" || block.Type == "PRIVATE KEY") {
+	if block == nil || (block.Type != "RSA PRIVATE KEY" && block.Type != "PRIVATE KEY") {
 		return nil, errors.New("failed to decode private key")
 	}
 
