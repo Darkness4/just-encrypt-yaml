@@ -2,6 +2,7 @@
 package main
 
 import (
+	"context"
 	"crypto/rand"
 	"fmt"
 	"log"
@@ -9,14 +10,14 @@ import (
 	"path/filepath"
 
 	"github.com/Darkness4/just-encrypt-yaml/cryptoyaml"
-	"github.com/urfave/cli/v2"
-	"gopkg.in/yaml.v3"
+	"github.com/goccy/go-yaml"
+	"github.com/urfave/cli/v3"
 )
 
 var version = ""
 
 func main() {
-	app := &cli.App{
+	app := &cli.Command{
 		Name:      "just-encrypt-yaml",
 		Usage:     "Encrypt or decrypt YAML files using RSA keys",
 		ArgsUsage: "<file>",
@@ -37,13 +38,13 @@ func main() {
 				Usage: "Path to the output file",
 			},
 		},
-		Action: func(c *cli.Context) error {
-			yamlFile := c.Args().Get(0)
-			key := c.String("key")
-			decrypt := c.Bool("decrypt")
+		Action: func(c context.Context, cmd *cli.Command) error {
+			yamlFile := cmd.Args().First()
+			key := cmd.String("key")
+			decrypt := cmd.Bool("decrypt")
 
 			// Default output file name
-			outputFile := c.String("out")
+			outputFile := cmd.String("out")
 			if outputFile == "" {
 				base := filepath.Base(yamlFile)
 				ext := filepath.Ext(yamlFile)
@@ -68,7 +69,6 @@ func main() {
 			}
 			defer output.Close()
 			enc := yaml.NewEncoder(output)
-			enc.SetIndent(2)
 
 			if decrypt {
 				privKey, err := LoadPrivateKey(key)
@@ -95,8 +95,7 @@ func main() {
 	}
 
 	// Run the app
-	err := app.Run(os.Args)
-	if err != nil {
+	if err := app.Run(context.Background(), os.Args); err != nil {
 		log.Fatal(err)
 	}
 }
