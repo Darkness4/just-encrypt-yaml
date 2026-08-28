@@ -38,7 +38,7 @@ func main() {
 				Usage: "Path to the output file",
 			},
 		},
-		Action: func(c context.Context, cmd *cli.Command) error {
+		Action: func(_ context.Context, cmd *cli.Command) error {
 			yamlFile := cmd.Args().First()
 			key := cmd.String("key")
 			decrypt := cmd.Bool("decrypt")

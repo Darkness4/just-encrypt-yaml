@@ -20,13 +20,13 @@ const (
 // Encoder encodes a YAML file.
 type Encoder interface {
 	// Encode writes the YAML representation of v to the writer.
-	Encode(v interface{}) (err error)
+	Encode(v any) (err error)
 }
 
 // Decoder decodes a YAML file.
 type Decoder interface {
 	// Decode reads the YAML from the reader and unmarshals it into v.
-	Decode(v interface{}) (err error)
+	Decode(v any) (err error)
 }
 
 // Encrypt encrypts every strings in a Encrypt and encode them to base64.
